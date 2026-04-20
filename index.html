@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedLife Network | Emergency Donor Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding-bottom: 50px; }
+        header { background: #d32f2f; color: white; padding: 25px; text-align: center; font-size: 30px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .main-container { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 30px; }
+        .card { background: white; padding: 30px; margin: 15px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); width: 380px; border-top: 5px solid #d32f2f; }
+        h2 { color: #d32f2f; margin-bottom: 20px; font-size: 24px; }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
+        button { background: #d32f2f; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; text-transform: uppercase; }
+        button:hover { background: #b71c1c; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3); }
+        #donorList { margin-top: 20px; text-align: left; max-height: 300px; overflow-y: auto; padding: 10px; background: #fffafa; border-radius: 8px; border: 1px solid #ffebee; }
+        .donor-item { background: white; padding: 10px; margin-bottom: 8px; border-left: 5px solid #d32f2f; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .status-msg { color: #d32f2f; font-weight: bold; font-size: 14px; margin-top: 10px; }
+        footer { margin-top: 50px; text-align: center; color: #777; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header>REDLIFE NETWORK</header>
+
+<div class="main-container">
+    <!-- Registration Section -->
+    <div class="card">
+        <h2>Become a Donor</h2>
+        <p style="font-size: 14px; color: #666;">Join our mission to save lives.</p>
+        <input type="text" id="donorName" placeholder="Full Name">
+        <input type="text" id="donorPhone" placeholder="Mobile Number">
+        <select id="regBloodGroup">
+            <option value="A+">A+</option>
+            <option value="B+">B+</option>
+            <option value="O+">O+</option>
+            <option value="AB+">AB+</option>
+            <option value="A-">A-</option>
+            <option value="B-">B-</option>
+            <option value="O-">O-</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <button onclick="registerDonor()">Submit Details</button>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card">
+        <h2>Find Donors</h2>
+        <p style="font-size: 14px; color: #666;">Search from our database of 120+ active donors.</p>
+        <select id="searchGroup">
+            <option value="A+">A+</option>
+            <option value="B+">B+</option>
+            <option value="O+">O+</option>
+            <option value="AB+">AB+</option>
+            <option value="A-">A-</option>
+            <option value="B-">B-</option>
+            <option value="O-">O-</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <button onclick="searchDonor()">Search Now</button>
+        
+        <div id="donorList">
+            <p style="color: #999; text-align: center;">Results will appear here...</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p><strong>Created by:  SUSMITA DAS KRISHNA  </p>
+    <p>Project for Social Impact | © 2026 RedLife Network</p>
+</footer>
+
+<script>
+    // ১০০ জন স্যাম্পল দাতার ডাটাবেস তৈরি (Simulation)
+    let donors = [];
+    const bloodGroups = ["A+", "B+", "O+", "AB+", "A-", "B-", "O-", "AB-"];
+    const names = ["Abir", "Sadia", "Tanvir", "Ishrat", "Fahim", "Nabila", "Zayan", "Muna", "Rifat", "Sami"];
+
+    for (let i = 1; i <= 120; i++) {
+        let name = names[Math.floor(Math.random() * names.length)] + " " + i;
+        let bg = bloodGroups[Math.floor(Math.random() * bloodGroups.length)];
+        donors.push({ name: name, phone: "01700-" + (100000 + i), group: bg });
+    }
+
+    function registerDonor() {
+        let n = document.getElementById('donorName').value;
+        let p = document.getElementById('donorPhone').value;
+        let g = document.getElementById('regBloodGroup').value;
+
+        if(n && p) {
+            donors.unshift({name: n, phone: p, group: g}); 
+            alert("Success! You are now a registered donor.");
+            document.getElementById('donorName').value = '';
+            document.getElementById('donorPhone').value = '';
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+
+    function searchDonor() {
+        let group = document.getElementById('searchGroup').value;
+        let listDiv = document.getElementById('donorList');
+        listDiv.innerHTML = "";
+
+        let results = donors.filter(d => d.group === group);
+
+        if(results.length > 0) {
+            listDiv.innerHTML = `<p class="status-msg">Found ${results.length} donors for ${group}:</p>`;
+            results.forEach(d => {
+                listDiv.innerHTML += `
+                    <div class="donor-item">
+                        <strong>${d.name}</strong><br>
+                        <span style="color:#d32f2f;">Group: ${d.group}</span> | Call: ${d.phone}
+                    </div>`;
+            });
+        } else {
+            listDiv.innerHTML = "<p style='color:red;'>No donors found for this group.</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
